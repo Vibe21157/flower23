@@ -115,6 +115,21 @@ function serveStatic(req, res) {
 
   fs.readFile(resolved, (error, data) => {
     if (error) {
+      if (urlPath.startsWith('/img/')) {
+        const fallback = path.resolve(ROOT, path.basename(urlPath));
+        if (fallback.startsWith(ROOT)) {
+          fs.readFile(fallback, (fallbackError, fallbackData) => {
+            if (!fallbackError) {
+              res.writeHead(200, { 'Content-Type': contentTypes[path.extname(fallback).toLowerCase()] || 'application/octet-stream' });
+              res.end(fallbackData);
+              return;
+            }
+            res.writeHead(404);
+            res.end('Not found');
+          });
+          return;
+        }
+      }
       res.writeHead(404);
       res.end('Not found');
       return;
