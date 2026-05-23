@@ -1,0 +1,5 @@
+node.exe
+node_modules/
+npm-debug.log*
+.codex-*.js
+index.before-*.html
